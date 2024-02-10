@@ -70,15 +70,25 @@ vectorModule :: [Float] -> Float
 -- la raíz cuadrada de la suma de todas las componentes del vector
 vectorModule norma = sqrt (sum [x ^ 2 | x <- norma]) 
 
+
 -- EJERCICIO 6 
 -- Función que identifica valores atípicos en una muestra de números
 -- Retorna una lista con los valores atípicos
 atipicValues :: [Float] -> [Float]
 atipicValues values =
-    -- fromIntegral transforma cualquier numero en algo más general para evitar excepciones al trabajar con distintos tipos de numeros
-    -- El hacer operaciones entre el valor devuelto por length y un float genera una excepción, con fromIntegral se soluciona
-    let average = sum values / fromIntegral (length values) -- Calcula la media de la muestra
-        -- Calcula la desviación estándar de la muestra
-        deviation = sqrt (sum [(x - average) ^ 2 | x <- values] / fromIntegral (length values)) 
+    let avg = getAverage values
+        dev = getDeviation values
     -- Se calcula la desviación típica para cada valor y se filtra los que no cumplen con las condiciones
-    in [x | x <- values, abs ((x - average) / deviation) > 3 || abs ((x - average) / deviation) < -3]
+    in [x | x <- values, abs ((x - avg) / dev) > 3 || abs ((x - avg) / dev) < -3]
+
+-- Recibe una lista de numeros y regresa su promedio
+getAverage :: [Float] -> Float
+getAverage values =
+-- fromIntegral transforma cualquier numero en algo más general para evitar excepciones al trabajar con distintos tipos de numeros
+-- El hacer operaciones entre el valor devuelto por length y un float genera una excepción, con fromIntegral se soluciona
+    sum values / fromIntegral (length values)
+
+-- Calcula la desciación estandar de una lista de números
+getDeviation :: [Float] -> Float
+getDeviation values =
+    sqrt (sum [(x - getAverage values) ^ 2 | x <- values] / fromIntegral (length values))
